@@ -33,18 +33,18 @@ export default function FeedbackDialog({ children }: FeedbackDialogProps) {
     <>
       <Dialog open={isOpen} onOpenChange={handleOpenChange}>
         {children}
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md overflow-hidden">
           <DialogHeader>
             <DialogTitle>Send Feedback</DialogTitle>
             <DialogDescription>Help us improve by sharing your feedback.</DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4">
+          <div className="space-y-4 min-w-0">
             <FeedbackTypeSelector />
 
-            <div className="space-y-2">
+            <div className="space-y-2 min-w-0">
               <Label>Attachments</Label>
-              <div className="space-y-2">
+              <div className="flex flex-col gap-2 min-w-0">
                 <AttachmentsList />
                 <AttachmentActions />
               </div>
