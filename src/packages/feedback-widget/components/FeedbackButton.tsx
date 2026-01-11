@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { IconSend } from "@tabler/icons-react";
 
 type FeedbackButtonProps = {
   position: "top-right" | "top-left" | "bottom-right" | "bottom-left";
+  onClick: () => void;
 };
-export default function FeedbackButton({ position }: FeedbackButtonProps) {
+
+export default function FeedbackButton({ position, onClick }: FeedbackButtonProps) {
   return (
     <div
       className={cn(
@@ -17,13 +18,9 @@ export default function FeedbackButton({ position }: FeedbackButtonProps) {
         position === "bottom-left" && "bottom-4 left-4"
       )}
     >
-      <DialogTrigger
-        render={
-          <Button>
-            <IconSend /> Feedback
-          </Button>
-        }
-      />
+      <Button onClick={onClick}>
+        <IconSend /> Feedback
+      </Button>
     </div>
   );
 }
