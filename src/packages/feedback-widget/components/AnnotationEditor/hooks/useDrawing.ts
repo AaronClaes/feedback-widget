@@ -9,7 +9,7 @@ type DrawingState = {
   currentPoints: number[];
 };
 
-export function useDrawing(stageRef: React.RefObject<Konva.Stage | null>) {
+export function useDrawing(konvaStage: Konva.Stage | null) {
   const [drawingState, setDrawingState] = useState<DrawingState>({
     isDrawing: false,
     currentPoints: [],
@@ -28,19 +28,18 @@ export function useDrawing(stageRef: React.RefObject<Konva.Stage | null>) {
   } = useAnnotationStore();
 
   const getPointerPosition = useCallback(() => {
-    const stage = stageRef.current;
-    if (!stage) return null;
-    const pos = stage.getPointerPosition();
+    if (!konvaStage) return null;
+    const pos = konvaStage.getPointerPosition();
     if (!pos) return null;
 
     // Transform screen coordinates to canvas coordinates
     // accounting for the stage's scale
-    const scale = stage.scaleX();
+    const scale = konvaStage.scaleX();
     return {
       x: pos.x / scale,
       y: pos.y / scale,
     };
-  }, [stageRef]);
+  }, [konvaStage]);
 
   const handleMouseDown = useCallback(
     (e: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
@@ -86,23 +85,30 @@ export function useDrawing(stageRef: React.RefObject<Konva.Stage | null>) {
         setEditingTextId(textAnnotation.id);
       }
     },
-    [activeTool, activeColor, fontSize, addAnnotation, setSelectedId, clearSelection, setEditingTextId, editingTextId, getPointerPosition]
+    [
+      activeTool,
+      activeColor,
+      fontSize,
+      addAnnotation,
+      setSelectedId,
+      clearSelection,
+      setEditingTextId,
+      editingTextId,
+      getPointerPosition,
+    ]
   );
 
-  const handleMouseMove = useCallback(
-    () => {
-      if (!drawingState.isDrawing || activeTool !== "freehand") return;
+  const handleMouseMove = useCallback(() => {
+    if (!drawingState.isDrawing || activeTool !== "freehand") return;
 
-      const pos = getPointerPosition();
-      if (!pos) return;
+    const pos = getPointerPosition();
+    if (!pos) return;
 
-      setDrawingState((prev) => ({
-        ...prev,
-        currentPoints: [...prev.currentPoints, pos.x, pos.y],
-      }));
-    },
-    [drawingState.isDrawing, activeTool, getPointerPosition]
-  );
+    setDrawingState((prev) => ({
+      ...prev,
+      currentPoints: [...prev.currentPoints, pos.x, pos.y],
+    }));
+  }, [drawingState.isDrawing, activeTool, getPointerPosition]);
 
   const handleMouseUp = useCallback(() => {
     if (!drawingState.isDrawing || activeTool !== "freehand") return;

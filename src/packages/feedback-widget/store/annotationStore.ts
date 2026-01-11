@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type Konva from "konva";
 import {
   FONT_SIZES,
   type Annotation,
@@ -12,6 +13,7 @@ type AnnotationActions = {
   // Editor lifecycle
   initEditor: (imageDataUrl: string, existingAnnotations?: Annotation[]) => void;
   resetEditor: () => void;
+  setKonvaStage: (ref: Konva.Stage | null) => void;
 
   // Annotations CRUD
   addAnnotation: (annotation: Annotation) => void;
@@ -41,6 +43,7 @@ type AnnotationActions = {
   // Get current annotations (for saving)
   getAnnotations: () => Annotation[];
   getOriginalImageDataUrl: () => string | null;
+  getCompositeDataUrl: () => string | null;
 };
 
 const initialState: AnnotationEditorState = {
@@ -55,6 +58,7 @@ const initialState: AnnotationEditorState = {
   fontSize: "regular",
   history: [],
   historyIndex: -1,
+  konvaStage: null,
 };
 
 export const useAnnotationStore = create<AnnotationEditorState & AnnotationActions>((set, get) => ({
@@ -73,6 +77,10 @@ export const useAnnotationStore = create<AnnotationEditorState & AnnotationActio
 
   resetEditor: () => {
     set(initialState);
+  },
+
+  setKonvaStage: (ref) => {
+    set({ konvaStage: ref });
   },
 
   addAnnotation: (annotation) => {
@@ -203,6 +211,18 @@ export const useAnnotationStore = create<AnnotationEditorState & AnnotationActio
 
   getAnnotations: () => get().annotations,
   getOriginalImageDataUrl: () => get().originalImageDataUrl,
+  getCompositeDataUrl: () => {
+    const { konvaStage, originalImageDataUrl } = get();
+    if (!konvaStage || !originalImageDataUrl) return null;
+
+    // Use Konva's toDataURL which properly composites all layers
+    // Use pixelRatio to match the original image resolution
+    const img = new Image();
+    img.src = originalImageDataUrl;
+    const pixelRatio = img.width / konvaStage.width();
+
+    return konvaStage.toDataURL({ pixelRatio });
+  },
 }));
 
 // Helper to generate unique IDs

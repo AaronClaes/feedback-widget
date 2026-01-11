@@ -20,6 +20,7 @@ export default function AnnotationEditorDialog() {
   const resetEditor = useAnnotationStore((state) => state.resetEditor);
   const getAnnotations = useAnnotationStore((state) => state.getAnnotations);
   const getOriginalImageDataUrl = useAnnotationStore((state) => state.getOriginalImageDataUrl);
+  const getCompositeDataUrl = useAnnotationStore((state) => state.getCompositeDataUrl);
 
   const isOpen = editingIndex !== null;
   const attachment = editingIndex !== null ? attachments[editingIndex] : null;
@@ -43,57 +44,14 @@ export default function AnnotationEditorDialog() {
 
     const annotations = getAnnotations();
     const originalDataUrl = getOriginalImageDataUrl();
+    const compositeDataUrl = getCompositeDataUrl();
 
-    // Get the stage element to export
-    const stageElement = document.querySelector(".konvajs-content canvas") as HTMLCanvasElement;
-
-    if (stageElement) {
-      // Create a canvas to composite the image with annotations
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-
-      if (ctx) {
-        // Load the original image
-        const img = new Image();
-        img.onload = () => {
-          canvas.width = img.width;
-          canvas.height = img.height;
-
-          // Draw the original image
-          ctx.drawImage(img, 0, 0);
-
-          // Get the stage canvas and draw annotations on top
-          // We need to scale the stage canvas to match the original image size
-          const stageCanvas = stageElement;
-          const scaleX = img.width / stageCanvas.width;
-          const scaleY = img.height / stageCanvas.height;
-
-          ctx.save();
-          ctx.scale(scaleX, scaleY);
-          ctx.drawImage(stageCanvas, 0, 0);
-          ctx.restore();
-
-          const compositeDataUrl = canvas.toDataURL("image/png");
-
-          console.log("compositeDataUrl", compositeDataUrl);
-
-          // Update the attachment with composite image and annotation data
-          updateAttachment(editingIndex, {
-            dataUrl: compositeDataUrl,
-            originalDataUrl: originalDataUrl || attachment.dataUrl,
-            annotations,
-          });
-        };
-        img.src = originalDataUrl || attachment.dataUrl;
-      }
-    } else {
-      // Fallback: just save annotations without composite
-      updateAttachment(editingIndex, {
-        dataUrl: attachment.dataUrl,
-        originalDataUrl: attachment.originalDataUrl || attachment.dataUrl,
-        annotations,
-      });
-    }
+    // Update the attachment with composite image and annotation data
+    updateAttachment(editingIndex, {
+      dataUrl: compositeDataUrl || attachment.dataUrl,
+      originalDataUrl: originalDataUrl || attachment.dataUrl,
+      annotations,
+    });
 
     handleClose();
   }

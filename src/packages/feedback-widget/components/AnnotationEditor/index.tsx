@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { Stage, Layer, Image as KonvaImage } from "react-konva";
-import type Konva from "konva";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { useAnnotationStore } from "../../store";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,6 @@ type AnnotationEditorProps = {
 
 export default function AnnotationEditor({ imageDataUrl }: AnnotationEditorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const stageRef = useRef<Konva.Stage>(null);
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [scale, setScale] = useState(1);
@@ -25,9 +23,16 @@ export default function AnnotationEditor({ imageDataUrl }: AnnotationEditorProps
   const inputRef = useRef<HTMLInputElement>(null);
   const [textInputValue, setTextInputValue] = useState("");
 
-  const { updateAnnotation, annotations, pushHistory, editingTextId, setEditingTextId } =
-    useAnnotationStore();
-  const { drawingState, handleMouseDown, handleMouseMove, handleMouseUp } = useDrawing(stageRef);
+  const {
+    updateAnnotation,
+    annotations,
+    pushHistory,
+    editingTextId,
+    setEditingTextId,
+    setKonvaStage,
+    konvaStage,
+  } = useAnnotationStore();
+  const { drawingState, handleMouseDown, handleMouseMove, handleMouseUp } = useDrawing(konvaStage);
 
   // Enable keyboard shortcuts
   useKeyboardShortcuts(true);
@@ -171,7 +176,9 @@ export default function AnnotationEditor({ imageDataUrl }: AnnotationEditorProps
         className="flex-1 relative bg-muted/50 rounded-lg overflow-hidden flex items-center justify-center"
       >
         <Stage
-          ref={stageRef}
+          ref={(stage) => {
+            if (stage && stage !== konvaStage) setKonvaStage(stage);
+          }}
           width={dimensions.width}
           height={dimensions.height}
           scaleX={scale}

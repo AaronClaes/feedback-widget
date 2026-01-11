@@ -1,3 +1,5 @@
+import type Konva from "konva";
+
 export type AnnotationTool = "select" | "freehand" | "text";
 
 export type FontSize = "small" | "regular" | "large";
@@ -62,4 +64,6 @@ export type AnnotationEditorState = {
   // History for undo/redo
   history: Annotation[][];
   historyIndex: number;
+  // Stage ref for exporting
+  konvaStage: Konva.Stage | null;
 };
