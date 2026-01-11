@@ -27,7 +27,7 @@ export function App() {
     <div className="flex h-screen w-screen">
       {/* Canvas - Left side */}
       <div className="flex-1 bg-zinc-900">
-        <Canvas camera={{ position: [4, 3, 5], fov: 50 }}>
+        <Canvas frameloop="demand" camera={{ position: [4, 3, 5], fov: 50 }}>
           <ambientLight intensity={0.5} />
           <directionalLight position={[5, 5, 5]} intensity={1} />
           <Cube color={cubeColor} />

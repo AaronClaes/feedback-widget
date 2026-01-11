@@ -3,6 +3,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconPaperclip,
+  IconPencil,
   IconPhoto,
   IconVideo,
   IconX,
@@ -13,6 +14,7 @@ export default function AttachmentsList() {
   const attachments = useFeedbackStore((state) => state.attachments);
   const removeAttachment = useFeedbackStore((state) => state.removeAttachment);
   const setPreviewIndex = useFeedbackStore((state) => state.setPreviewIndex);
+  const setEditingIndex = useFeedbackStore((state) => state.setEditingIndex);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -92,16 +94,31 @@ export default function AttachmentsList() {
             ) : (
               <video src={attachment.url} className="aspect-video w-full object-cover" />
             )}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                removeAttachment(index);
-              }}
-              className="absolute top-1.5 right-1.5 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity hover:bg-black/80 group-hover:opacity-100"
-            >
-              <IconX className="size-3" />
-            </button>
+            <div className="absolute top-1.5 right-1.5 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+              {attachment.type === "screenshot" && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEditingIndex(index);
+                  }}
+                  className="rounded-full bg-black/60 p-1 text-white hover:bg-black/80"
+                  title="Edit annotations"
+                >
+                  <IconPencil className="size-3" />
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeAttachment(index);
+                }}
+                className="rounded-full bg-black/60 p-1 text-white hover:bg-black/80"
+              >
+                <IconX className="size-3" />
+              </button>
+            </div>
             <div className="absolute bottom-1.5 left-1.5 flex items-center gap-1 rounded bg-black/60 px-1.5 py-0.5 text-xs text-white">
               {attachment.type === "screenshot" ? (
                 <>

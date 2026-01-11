@@ -1,6 +1,7 @@
 import FeedbackButton from "./components/FeedbackButton";
 import FeedbackDialog from "./components/FeedbackDialog";
 import StopRecordingButton from "./components/StopRecordingButton";
+import AnnotationEditorDialog from "./components/AnnotationEditorDialog";
 import { useFeedbackStore } from "./store";
 import { useScreenCapture } from "./hooks/useScreenCapture";
 
@@ -19,6 +20,8 @@ export default function FeedbackWidget() {
       )}
 
       {isRecording && <StopRecordingButton onStop={stopRecording} />}
+
+      <AnnotationEditorDialog />
     </>
   );
 }

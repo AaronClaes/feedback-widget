@@ -6,13 +6,14 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { IconChevronLeft, IconChevronRight, IconTrash } from "@tabler/icons-react";
+import { IconChevronLeft, IconChevronRight, IconPencil, IconTrash } from "@tabler/icons-react";
 import { useFeedbackStore } from "../store";
 
 export default function AttachmentPreviewDialog() {
   const attachments = useFeedbackStore((state) => state.attachments);
   const previewIndex = useFeedbackStore((state) => state.previewIndex);
   const setPreviewIndex = useFeedbackStore((state) => state.setPreviewIndex);
+  const setEditingIndex = useFeedbackStore((state) => state.setEditingIndex);
   const removeAttachment = useFeedbackStore((state) => state.removeAttachment);
 
   const isOpen = previewIndex !== null;
@@ -42,6 +43,13 @@ export default function AttachmentPreviewDialog() {
       } else if (previewIndex >= attachments.length - 1) {
         setPreviewIndex(previewIndex - 1);
       }
+    }
+  };
+
+  const handleEdit = () => {
+    if (previewIndex !== null && attachment?.type === "screenshot") {
+      setPreviewIndex(null);
+      setEditingIndex(previewIndex);
     }
   };
 
@@ -95,15 +103,27 @@ export default function AttachmentPreviewDialog() {
             </Button>
           </div>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleDelete}
-            className="text-destructive hover:text-destructive"
-          >
-            <IconTrash className="size-4" />
-            Delete
-          </Button>
+          <div className="flex gap-2">
+            {attachment.type === "screenshot" && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleEdit}
+              >
+                <IconPencil className="size-4" />
+                Edit
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDelete}
+              className="text-destructive hover:text-destructive"
+            >
+              <IconTrash className="size-4" />
+              Delete
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
