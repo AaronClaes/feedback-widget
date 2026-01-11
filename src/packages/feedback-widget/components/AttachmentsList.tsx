@@ -40,7 +40,7 @@ export default function AttachmentsList() {
 
   if (attachments.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border bg-muted/50 py-6 text-center">
+      <div className="flex flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border bg-muted/50 text-center h-[calc(9rem*9/16+0.5rem)]">
         <div className="rounded-full bg-muted p-2">
           <IconPaperclip className="size-5 text-muted-foreground" />
         </div>
@@ -67,7 +67,7 @@ export default function AttachmentsList() {
       <div
         ref={scrollRef}
         onScroll={updateScrollButtons}
-        className="flex gap-2 overflow-x-auto scrollbar-none scroll-smooth px-1"
+        className="flex gap-2 overflow-x-auto scrollbar-none scroll-smooth p-1"
       >
         {attachments.map((attachment, index) => (
           <div

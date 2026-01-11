@@ -12,9 +12,11 @@ export default function FeedbackWidget() {
 
   return (
     <>
-      <FeedbackDialog>
-        <FeedbackButton position="bottom-right" onClick={() => setIsOpen(true)} />
-      </FeedbackDialog>
+      {!isRecording && (
+        <FeedbackDialog>
+          <FeedbackButton position="bottom-right" onClick={() => setIsOpen(true)} />
+        </FeedbackDialog>
+      )}
 
       {isRecording && <StopRecordingButton onStop={stopRecording} />}
     </>
