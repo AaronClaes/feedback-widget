@@ -1,3 +1,10 @@
+import FeedbackButton from "./components/FeedbackButton";
+import FeedbackDialog from "./components/FeedbackDialog";
+
 export default function FeedbackWidget() {
-  return <div>FeedbackWidget</div>;
+  return (
+    <FeedbackDialog>
+      <FeedbackButton position="bottom-right" />
+    </FeedbackDialog>
+  );
 }
