@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { Stage, Layer, Image as KonvaImage } from "react-konva";
+import type Konva from "konva";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { useAnnotationStore } from "../../store";
 import { Button } from "@/components/ui/button";
@@ -29,9 +30,18 @@ export default function AnnotationEditor({ imageDataUrl }: AnnotationEditorProps
     pushHistory,
     editingTextId,
     setEditingTextId,
-    setKonvaStage,
     konvaStage,
   } = useAnnotationStore();
+
+  const stageRefCallback = useCallback(
+    (stage: Konva.Stage | null) => {
+      if (stage !== konvaStage) {
+        useAnnotationStore.getState().setKonvaStage(stage);
+      }
+    },
+    [konvaStage]
+  );
+
   const { drawingState, handleMouseDown, handleMouseMove, handleMouseUp } = useDrawing(konvaStage);
 
   // Enable keyboard shortcuts
@@ -176,9 +186,7 @@ export default function AnnotationEditor({ imageDataUrl }: AnnotationEditorProps
         className="flex-1 relative bg-muted/50 rounded-lg overflow-hidden flex items-center justify-center"
       >
         <Stage
-          ref={(stage) => {
-            if (stage && stage !== konvaStage) setKonvaStage(stage);
-          }}
+          ref={stageRefCallback}
           width={dimensions.width}
           height={dimensions.height}
           scaleX={scale}

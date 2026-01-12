@@ -19,6 +19,7 @@ type AnnotationActions = {
   addAnnotation: (annotation: Annotation) => void;
   updateAnnotation: (id: string, updates: Partial<Annotation>) => void;
   removeAnnotation: (id: string) => void;
+  clearAllAnnotations: () => void;
 
   // Selection
   setSelectedId: (id: string | null) => void;
@@ -103,6 +104,11 @@ export const useAnnotationStore = create<AnnotationEditorState & AnnotationActio
       annotations: state.annotations.filter((ann) => ann.id !== id),
       selectedId: state.selectedId === id ? null : state.selectedId,
     }));
+    get().pushHistory();
+  },
+
+  clearAllAnnotations: () => {
+    set({ annotations: [], selectedId: null });
     get().pushHistory();
   },
 

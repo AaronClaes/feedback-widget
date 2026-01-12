@@ -8,7 +8,7 @@ import {
   IconTrashX,
 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
-import { useAnnotationStore } from "../../store";
+import { useVideoAnnotationStore } from "../../store";
 import {
   ANNOTATION_COLORS,
   FONT_SIZES,
@@ -31,7 +31,7 @@ const fontSizeOptions: { id: FontSize; label: string }[] = [
   { id: "large", label: "L" },
 ];
 
-export default function AnnotationToolbar() {
+export default function VideoAnnotationToolbar() {
   const {
     activeTool,
     setActiveTool,
@@ -49,7 +49,7 @@ export default function AnnotationToolbar() {
     redo,
     canUndo,
     canRedo,
-  } = useAnnotationStore();
+  } = useVideoAnnotationStore();
 
   const selectedAnnotation = selectedId ? annotations.find((a) => a.id === selectedId) : null;
   const isTextSelected = selectedAnnotation?.type === "text";
@@ -64,7 +64,7 @@ export default function AnnotationToolbar() {
   };
 
   return (
-    <div className="flex items-center gap-1 p-2 bg-card border border-border rounded-lg shadow-sm">
+    <div className="flex items-center gap-1 p-2 bg-background backdrop-blur border border-border rounded-lg shadow-lg\">
       {/* Tools */}
       <div className="flex items-center gap-0.5 pr-2 border-r border-border">
         {tools.map((tool) => (
@@ -100,7 +100,7 @@ export default function AnnotationToolbar() {
         ))}
       </div>
 
-      {/* Stroke Width (show for freehand tool or when freehand annotation is selected) */}
+      {/* Stroke Width */}
       {showStrokeWidth && (
         <div className="flex items-center gap-1 px-2 border-r border-border">
           {strokeWidths.map((width) => (
@@ -120,7 +120,7 @@ export default function AnnotationToolbar() {
         </div>
       )}
 
-      {/* Font Size (show for text tool or when text annotation is selected) */}
+      {/* Font Size */}
       {showFontSize && (
         <div className="flex items-center gap-1 px-2 border-r border-border">
           {fontSizeOptions.map((option) => (
@@ -183,14 +183,13 @@ export default function AnnotationToolbar() {
         <Button
           type="button"
           variant="ghost"
-          size="sm"
+          size="icon-sm"
           onClick={clearAllAnnotations}
           disabled={annotations.length === 0}
           className="text-destructive hover:text-destructive hover:bg-destructive/10"
           title="Clear all annotations"
         >
           <IconTrashX className="size-4" />
-          Clear all
         </Button>
       </div>
     </div>
